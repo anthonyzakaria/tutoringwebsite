@@ -1,4 +1,4 @@
-// pages/HomePage.jsx
+// src/pages/HomePage.jsx
 import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { TutorDataContext } from '../context/TutorDataContext'
@@ -41,22 +41,23 @@ function HomePage() {
         >
           TutorMarketplace
         </div>
+
         <div className="space-x-4">
+          {/* Make these buttons purple with white text */}
           <button 
-            className="text-gray-700 hover:text-brand-primary transition" 
+            className="bg-brand-primary text-white px-4 py-2 rounded-md hover:bg-purple-600 transition"
             onClick={() => navigate('/about')}
           >
             About
           </button>
           <button 
-            className="text-gray-700 hover:text-brand-primary transition" 
+            className="bg-brand-primary text-white px-4 py-2 rounded-md hover:bg-purple-600 transition"
             onClick={() => navigate('/how-it-works')}
           >
             How It Works
           </button>
           <button 
-            className="bg-brand-primary text-white px-4 py-2 rounded-md 
-                       hover:bg-purple-600 transition"
+            className="bg-brand-primary text-white px-4 py-2 rounded-md hover:bg-purple-600 transition"
             onClick={() => navigate('/login')}
           >
             Login
@@ -65,44 +66,56 @@ function HomePage() {
       </nav>
 
       {/* HERO SECTION */}
-      <header className="relative flex-grow bg-gradient-to-r from-brand-primary to-purple-700 text-white py-16 px-6 flex flex-col items-center justify-center">
-        <h1 className="text-5xl font-extrabold mb-4">Find the Perfect Tutor</h1>
-        <p className="text-lg max-w-2xl text-center mb-8">
-          Ace your courses with help from expert tutors at your university.
-        </p>
+      <header 
+        className="relative flex-grow bg-gradient-to-r from-brand-primary to-purple-700 
+                   text-white flex flex-col items-center justify-center"
+        style={{ minHeight: 'calc(100vh - 72px)' }} 
+      >
+        <div className="max-w-screen-xl w-full px-4">
+          <h1 className="text-5xl font-extrabold mb-4 text-center">
+            Find the Perfect Tutor
+          </h1>
+          <p className="text-lg max-w-2xl text-center mb-8 mx-auto opacity-90">
+            Ace your courses with help from expert tutors at your university.
+          </p>
 
-        {/* Search Box */}
-        <div className="bg-white text-gray-800 w-full max-w-md p-6 rounded-md shadow-md">
-          <h2 className="text-xl font-semibold mb-4">Search Tutors</h2>
-          <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">University</label>
-            <UniversitySelect
-              universities={universities}
-              selectedUniversity={selectedUniversity}
-              onSelect={setSelectedUniversity}
-            />
-          </div>
-          {selectedUniversity && (
+          {/* Search Box */}
+          <div className="bg-white text-gray-800 w-full max-w-md mx-auto p-6 rounded-md shadow-md">
+            <h2 className="text-xl font-semibold mb-4">Search Tutors</h2>
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-1">Course</label>
-              <CourseSelect
-                courses={availableCourses}
-                selectedCourse={selectedCourse}
-                onSelect={setSelectedCourse}
+              <label className="block text-sm font-medium mb-1">University</label>
+              {/* Purple dropdown for University */}
+              <UniversitySelect
+                universities={universities}
+                selectedUniversity={selectedUniversity}
+                onSelect={setSelectedUniversity}
               />
             </div>
-          )}
-          <button
-            disabled={!selectedUniversity}
-            onClick={handleFindTutors}
-            className={`w-full py-2 rounded-md mt-2 font-medium 
-              ${selectedUniversity
-                ? 'bg-brand-primary text-white hover:bg-purple-600'
-                : 'bg-gray-300 text-gray-600 cursor-not-allowed'
-              }`}
-          >
-            Find Tutors
-          </button>
+
+            {selectedUniversity && (
+              <div className="mb-4">
+                <label className="block text-sm font-medium mb-1">Course</label>
+                {/* Purple dropdown for Course */}
+                <CourseSelect
+                  courses={availableCourses}
+                  selectedCourse={selectedCourse}
+                  onSelect={setSelectedCourse}
+                />
+              </div>
+            )}
+
+            <button
+              disabled={!selectedUniversity}
+              onClick={handleFindTutors}
+              className={`w-full py-2 rounded-md mt-2 font-medium transition-colors
+                ${selectedUniversity
+                  ? 'bg-brand-primary text-white hover:bg-purple-600'
+                  : 'bg-gray-300 text-gray-600 cursor-not-allowed'
+                }`}
+            >
+              Find Tutors
+            </button>
+          </div>
         </div>
       </header>
 
@@ -117,4 +130,3 @@ function HomePage() {
 }
 
 export default HomePage
-
