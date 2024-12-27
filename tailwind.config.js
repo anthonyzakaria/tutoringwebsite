@@ -1,12 +1,21 @@
+// tailwind.config.js
 /** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
   content: [
     "./index.html",
-    "./src/**/*.{js,jsx,ts,tsx}",
+    "./src/**/*.{js,jsx,ts,tsx}"
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        brand: {
+          primary: "#6B5EFF", // Vibrant purple
+          accent: "#3ECF8E"   // Contrasting green
+        }
+      }
+    }
   },
-  plugins: [],
-}
+  plugins: []
+};
+
 

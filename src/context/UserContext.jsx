@@ -1,10 +1,11 @@
+// context/UserContext.js
 import { createContext, useState, useEffect } from 'react'
 
 const initialUserState = {
   id: null,
   name: '',
   role: '', // 'student' or 'tutor'
-  university: '',
+  email: ''
 }
 
 export const UserContext = createContext({
