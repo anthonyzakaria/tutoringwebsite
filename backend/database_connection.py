@@ -5,10 +5,10 @@ from psycopg2.extras import RealDictCursor
 app = Flask(__name__)
 
 # Database connection parameters
-DB_HOST = "your_rds_host"
-DB_NAME = "your_db_name"
-DB_USER = "your_db_user"
-DB_PASS = "your_db_password"
+DB_HOST = "mytestdb.ctmii6ws07sv.us-east-1.rds.amazonaws.com"
+DB_NAME = "mytestdb"
+DB_USER = "postgres"
+DB_PASS = "UpbeatCamera4257$"
 
 # Establish a connection to the database
 def get_db_connection():
