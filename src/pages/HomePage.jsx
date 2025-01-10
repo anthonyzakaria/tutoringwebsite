@@ -1,4 +1,5 @@
 // src/pages/HomePage.jsx
+
 import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { TutorDataContext } from '../context/TutorDataContext'
@@ -8,8 +9,8 @@ import CourseSelect from '../components/CourseSelect'
 const universities = ['University A', 'University B', 'University C']
 
 function HomePage() {
-  const { selectedUniversity, setSelectedUniversity, selectedCourse, setSelectedCourse } = useContext(TutorDataContext)
   const navigate = useNavigate()
+  const { selectedUniversity, setSelectedUniversity, selectedCourse, setSelectedCourse } = useContext(TutorDataContext)
 
   const coursesByUniversity = {
     'University A': ['Calculus 101', 'Physics 201', 'Chemistry 301'],
@@ -19,6 +20,7 @@ function HomePage() {
 
   const [availableCourses, setAvailableCourses] = useState([])
 
+  // Whenever selectedUniversity changes, update availableCourses
   useEffect(() => {
     if (selectedUniversity && coursesByUniversity[selectedUniversity]) {
       setAvailableCourses(coursesByUniversity[selectedUniversity])
@@ -28,6 +30,7 @@ function HomePage() {
   }, [selectedUniversity])
 
   const handleFindTutors = () => {
+    // Navigate to the marketplace page
     navigate('/marketplace')
   }
 
@@ -39,37 +42,64 @@ function HomePage() {
           className="text-2xl font-bold text-brand-primary cursor-pointer"
           onClick={() => navigate('/')}
         >
-          TutorMarketplace
+          TutorMyCollege
         </div>
-
         <div className="space-x-4">
-          {/* Make these buttons purple with white text */}
-          <button 
+          {/* About Page */}
+          <button
             className="bg-brand-primary text-white px-4 py-2 rounded-md hover:bg-purple-600 transition"
             onClick={() => navigate('/about')}
           >
             About
           </button>
-          <button 
+
+          {/* How It Works Page */}
+          <button
             className="bg-brand-primary text-white px-4 py-2 rounded-md hover:bg-purple-600 transition"
             onClick={() => navigate('/how-it-works')}
           >
             How It Works
           </button>
-          <button 
+
+          {/* Login Page */}
+          <button
             className="bg-brand-primary text-white px-4 py-2 rounded-md hover:bg-purple-600 transition"
             onClick={() => navigate('/login')}
           >
             Login
           </button>
+
+          {/* Student Dashboard */}
+          <button
+            className="bg-brand-primary text-white px-4 py-2 rounded-md hover:bg-purple-600 transition"
+            onClick={() => navigate('/student-dashboard')}
+          >
+            Student Dashboard
+          </button>
+
+          {/* Tutor Dashboard */}
+          <button
+            className="bg-brand-primary text-white px-4 py-2 rounded-md hover:bg-purple-600 transition"
+            onClick={() => navigate('/tutor-dashboard')}
+          >
+            Tutor Dashboard
+          </button>
+
+          {/* Contact Us */}
+          <button
+            className="bg-brand-primary text-white px-4 py-2 rounded-md hover:bg-purple-600 transition"
+            onClick={() => navigate('/contact-us')}
+          >
+            Contact Us
+          </button>
         </div>
       </nav>
 
       {/* HERO SECTION */}
-      <header 
-        className="relative flex-grow bg-gradient-to-r from-brand-primary to-purple-700 
+      <header
+        className="relative flex-grow bg-gradient-to-r from-brand-primary to-purple-700
                    text-white flex flex-col items-center justify-center"
-        style={{ minHeight: 'calc(100vh - 72px)' }} 
+        style={{ minHeight: 'calc(100vh - 72px)' }}
       >
         <div className="max-w-screen-xl w-full px-4">
           <h1 className="text-5xl font-extrabold mb-4 text-center">
@@ -79,12 +109,14 @@ function HomePage() {
             Ace your courses with help from expert tutors at your university.
           </p>
 
-          {/* Search Box */}
+          {/* SEARCH BOX */}
           <div className="bg-white text-gray-800 w-full max-w-md mx-auto p-6 rounded-md shadow-md">
             <h2 className="text-xl font-semibold mb-4">Search Tutors</h2>
+
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-1">University</label>
-              {/* Purple dropdown for University */}
+              <label className="block text-sm font-medium mb-1">
+                University
+              </label>
               <UniversitySelect
                 universities={universities}
                 selectedUniversity={selectedUniversity}
@@ -94,8 +126,9 @@ function HomePage() {
 
             {selectedUniversity && (
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Course</label>
-                {/* Purple dropdown for Course */}
+                <label className="block text-sm font-medium mb-1">
+                  Course
+                </label>
                 <CourseSelect
                   courses={availableCourses}
                   selectedCourse={selectedCourse}
@@ -108,10 +141,12 @@ function HomePage() {
               disabled={!selectedUniversity}
               onClick={handleFindTutors}
               className={`w-full py-2 rounded-md mt-2 font-medium transition-colors
-                ${selectedUniversity
-                  ? 'bg-brand-primary text-white hover:bg-purple-600'
-                  : 'bg-gray-300 text-gray-600 cursor-not-allowed'
-                }`}
+                ${
+                  selectedUniversity
+                    ? 'bg-brand-primary text-white hover:bg-purple-600'
+                    : 'bg-gray-300 text-gray-600 cursor-not-allowed'
+                }
+              `}
             >
               Find Tutors
             </button>
@@ -122,7 +157,7 @@ function HomePage() {
       {/* FOOTER */}
       <footer className="bg-white text-center py-4">
         <p className="text-sm text-gray-500">
-          &copy; {new Date().getFullYear()} TutorMarketplace. All rights reserved.
+          &copy; {new Date().getFullYear()} TutorMyCollege. All rights reserved.
         </p>
       </footer>
     </div>
