@@ -14,9 +14,12 @@ const UniversitySelect = ({ universities, selectedUniversity, onSelect }) => {
       <option value="">
         -- Select a University --
       </option>
-      {universities.map((uni) => (
-        <option key={uni} value={uni}>
-          {uni}
+      {universities.map((uniObj) => (
+        <option 
+          key={uniObj.school_id}
+          value={uniObj.name}  
+        >
+          {uniObj.name}
         </option>
       ))}
     </select>
@@ -24,4 +27,5 @@ const UniversitySelect = ({ universities, selectedUniversity, onSelect }) => {
 }
 
 export default UniversitySelect
+
 

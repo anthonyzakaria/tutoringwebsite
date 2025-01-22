@@ -2,16 +2,18 @@
 
 import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { TutorDataContext } from '../context/TutorDataContext'
+import { TutorDataContext } from '../context/TutorDataContext.jsx'
 import UniversitySelect from '../components/UniversitySelect'
 import CourseSelect from '../components/CourseSelect'
-
-const universities = ['University A', 'University B', 'University C']
 
 function HomePage() {
   const navigate = useNavigate()
   const { selectedUniversity, setSelectedUniversity, selectedCourse, setSelectedCourse } = useContext(TutorDataContext)
 
+  // This array is now filled by fetching from your API
+  const [universities, setUniversities] = useState([])
+
+  // Local mapping of courses for each known university name
   const coursesByUniversity = {
     'University A': ['Calculus 101', 'Physics 201', 'Chemistry 301'],
     'University B': ['History 101', 'Philosophy 201', 'Sociology 301'],
@@ -20,7 +22,25 @@ function HomePage() {
 
   const [availableCourses, setAvailableCourses] = useState([])
 
-  // Whenever selectedUniversity changes, update availableCourses
+  // 1. Fetch the list of universities from AWS
+  useEffect(() => {
+    fetch('https://mvokoi9esi.execute-api.us-east-1.amazonaws.com/dev/schoolselect')
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`Failed to fetch universities. Status: ${res.status}`)
+        }
+        return res.json()
+      })
+      .then((data) => {
+        // data is presumably [ { school_id, name }, ... ]
+        setUniversities(data)
+      })
+      .catch((err) => {
+        console.error('Error fetching universities:', err)
+      })
+  }, [])
+
+  // 2. Whenever a university is selected, pick the correct courses
   useEffect(() => {
     if (selectedUniversity && coursesByUniversity[selectedUniversity]) {
       setAvailableCourses(coursesByUniversity[selectedUniversity])
@@ -30,7 +50,6 @@ function HomePage() {
   }, [selectedUniversity])
 
   const handleFindTutors = () => {
-    // Navigate to the marketplace page
     navigate('/marketplace')
   }
 
@@ -45,47 +64,36 @@ function HomePage() {
           TutorMyCollege
         </div>
         <div className="space-x-4">
-          {/* About Page */}
           <button
             className="bg-brand-primary text-white px-4 py-2 rounded-md hover:bg-purple-600 transition"
             onClick={() => navigate('/about')}
           >
             About
           </button>
-
-          {/* How It Works Page */}
           <button
             className="bg-brand-primary text-white px-4 py-2 rounded-md hover:bg-purple-600 transition"
             onClick={() => navigate('/how-it-works')}
           >
             How It Works
           </button>
-
-          {/* Login Page */}
           <button
             className="bg-brand-primary text-white px-4 py-2 rounded-md hover:bg-purple-600 transition"
             onClick={() => navigate('/login')}
           >
             Login
           </button>
-
-          {/* Student Dashboard */}
           <button
             className="bg-brand-primary text-white px-4 py-2 rounded-md hover:bg-purple-600 transition"
             onClick={() => navigate('/student-dashboard')}
           >
             Student Dashboard
           </button>
-
-          {/* Tutor Dashboard */}
           <button
             className="bg-brand-primary text-white px-4 py-2 rounded-md hover:bg-purple-600 transition"
             onClick={() => navigate('/tutor-dashboard')}
           >
             Tutor Dashboard
           </button>
-
-          {/* Contact Us */}
           <button
             className="bg-brand-primary text-white px-4 py-2 rounded-md hover:bg-purple-600 transition"
             onClick={() => navigate('/contact-us')}
@@ -118,7 +126,7 @@ function HomePage() {
                 University
               </label>
               <UniversitySelect
-                universities={universities}
+                universities={universities}           // array of { school_id, name }
                 selectedUniversity={selectedUniversity}
                 onSelect={setSelectedUniversity}
               />
@@ -165,3 +173,4 @@ function HomePage() {
 }
 
 export default HomePage
+
