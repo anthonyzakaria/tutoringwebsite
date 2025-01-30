@@ -8,48 +8,66 @@ import CourseSelect from '../components/CourseSelect'
 
 function HomePage() {
   const navigate = useNavigate()
-  const { selectedUniversity, setSelectedUniversity, selectedCourse, setSelectedCourse } = useContext(TutorDataContext)
+  const {
+    selectedUniversity,
+    setSelectedUniversity,
+    selectedCourse,
+    setSelectedCourse
+  } = useContext(TutorDataContext)
 
-  // This array is now filled by fetching from your API
   const [universities, setUniversities] = useState([])
+  const [allCourses, setAllCourses] = useState([]) // We'll store all courses here
 
-  // Local mapping of courses for each known university name
-  const coursesByUniversity = {
-    'University A': ['Calculus 101', 'Physics 201', 'Chemistry 301'],
-    'University B': ['History 101', 'Philosophy 201', 'Sociology 301'],
-    'University C': ['Computer Science 101', 'Data Structures 201', 'AI 301'],
-  }
-
-  const [availableCourses, setAvailableCourses] = useState([])
-
-  // 1. Fetch the list of universities from AWS
+  //
+  // A) Fetch Universities once on mount
+  //
   useEffect(() => {
-    fetch('https://mvokoi9esi.execute-api.us-east-1.amazonaws.com/dev/schoolselect')
+    const urlUni = 'https://mvokoi9esi.execute-api.us-east-1.amazonaws.com/dev/schoolselect'
+    console.log("[Fetch Universities] calling:", urlUni)
+
+    fetch(urlUni)
       .then((res) => {
+        console.log("[Fetch Universities] status:", res.status)
         if (!res.ok) {
           throw new Error(`Failed to fetch universities. Status: ${res.status}`)
         }
         return res.json()
       })
       .then((data) => {
-        // data is presumably [ { school_id, name }, ... ]
-        setUniversities(data)
+        console.log("[Fetch Universities] data:", data)
+        setUniversities(data) // e.g. [ { school_id, name } ]
       })
       .catch((err) => {
-        console.error('Error fetching universities:', err)
+        console.error('[Fetch Universities] error:', err)
       })
   }, [])
 
-  // 2. Whenever a university is selected, pick the correct courses
+  //
+  // B) Fetch All Courses on mount (no filtering)
+  //
   useEffect(() => {
-    if (selectedUniversity && coursesByUniversity[selectedUniversity]) {
-      setAvailableCourses(coursesByUniversity[selectedUniversity])
-    } else {
-      setAvailableCourses([])
-    }
-  }, [selectedUniversity])
+    const urlCourses = 'https://bfoctt4eva.execute-api.us-east-1.amazonaws.com/dev/courseSelector'
+    console.log("[Fetch All Courses] calling:", urlCourses)
+
+    fetch(urlCourses)
+      .then((res) => {
+        console.log("[Fetch All Courses] status:", res.status)
+        if (!res.ok) {
+          throw new Error(`Failed to fetch courses. Status: ${res.status}`)
+        }
+        return res.json()
+      })
+      .then((data) => {
+        console.log("[Fetch All Courses] data:", data)
+        setAllCourses(data) // e.g. an array of { course_id, course_name, ... }
+      })
+      .catch((err) => {
+        console.error('[Fetch All Courses] error:', err)
+      })
+  }, [])
 
   const handleFindTutors = () => {
+    console.log("[Find Tutors] selectedUniversity:", selectedUniversity, "selectedCourse:", selectedCourse)
     navigate('/marketplace')
   }
 
@@ -64,37 +82,38 @@ function HomePage() {
           TutorMyCollege
         </div>
         <div className="space-x-4">
-          <button
+          {/* Additional Navbar Buttons */}
+          <button 
             className="bg-brand-primary text-white px-4 py-2 rounded-md hover:bg-purple-600 transition"
             onClick={() => navigate('/about')}
           >
             About
           </button>
-          <button
+          <button 
             className="bg-brand-primary text-white px-4 py-2 rounded-md hover:bg-purple-600 transition"
             onClick={() => navigate('/how-it-works')}
           >
             How It Works
           </button>
-          <button
+          <button 
             className="bg-brand-primary text-white px-4 py-2 rounded-md hover:bg-purple-600 transition"
             onClick={() => navigate('/login')}
           >
             Login
           </button>
-          <button
+          <button 
             className="bg-brand-primary text-white px-4 py-2 rounded-md hover:bg-purple-600 transition"
             onClick={() => navigate('/student-dashboard')}
           >
             Student Dashboard
           </button>
-          <button
+          <button 
             className="bg-brand-primary text-white px-4 py-2 rounded-md hover:bg-purple-600 transition"
             onClick={() => navigate('/tutor-dashboard')}
           >
             Tutor Dashboard
           </button>
-          <button
+          <button 
             className="bg-brand-primary text-white px-4 py-2 rounded-md hover:bg-purple-600 transition"
             onClick={() => navigate('/contact-us')}
           >
@@ -121,29 +140,31 @@ function HomePage() {
           <div className="bg-white text-gray-800 w-full max-w-md mx-auto p-6 rounded-md shadow-md">
             <h2 className="text-xl font-semibold mb-4">Search Tutors</h2>
 
+            {/* University Select */}
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-1">
-                University
-              </label>
+              <label className="block text-sm font-medium mb-1">University</label>
               <UniversitySelect
-                universities={universities}           // array of { school_id, name }
+                universities={universities}
                 selectedUniversity={selectedUniversity}
                 onSelect={setSelectedUniversity}
               />
             </div>
 
-            {selectedUniversity && (
-              <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">
-                  Course
-                </label>
+            {/* Course Select (Now just all courses) */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-1">Course</label>
+              {allCourses.length === 0 ? (
+                <p className="text-sm text-gray-500">
+                  No courses loaded yet...
+                </p>
+              ) : (
                 <CourseSelect
-                  courses={availableCourses}
+                  courses={allCourses}
                   selectedCourse={selectedCourse}
                   onSelect={setSelectedCourse}
                 />
-              </div>
-            )}
+              )}
+            </div>
 
             <button
               disabled={!selectedUniversity}
@@ -153,8 +174,7 @@ function HomePage() {
                   selectedUniversity
                     ? 'bg-brand-primary text-white hover:bg-purple-600'
                     : 'bg-gray-300 text-gray-600 cursor-not-allowed'
-                }
-              `}
+                }`}
             >
               Find Tutors
             </button>
@@ -162,7 +182,6 @@ function HomePage() {
         </div>
       </header>
 
-      {/* FOOTER */}
       <footer className="bg-white text-center py-4">
         <p className="text-sm text-gray-500">
           &copy; {new Date().getFullYear()} TutorMyCollege. All rights reserved.
@@ -173,4 +192,5 @@ function HomePage() {
 }
 
 export default HomePage
+
 
