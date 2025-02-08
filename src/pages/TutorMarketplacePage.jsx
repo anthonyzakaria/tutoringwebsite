@@ -1,52 +1,61 @@
 // src/pages/TutorMarketplacePage.jsx
-import React, { useContext, useEffect, useState } from 'react'
-import { TutorDataContext } from '../context/TutorDataContext.jsx'
-// (optional) for navigation or styling
-import { useNavigate } from 'react-router-dom'
+
+import React, { useContext, useEffect, useState } from 'react';
+import { TutorDataContext } from '../context/TutorDataContext.jsx';
+import { useNavigate } from 'react-router-dom';
 
 function TutorMarketplacePage() {
-  const { selectedUniversity, selectedCourse } = useContext(TutorDataContext)
-  const [tutorList, setTutorList] = useState([])
-  const navigate = useNavigate()
+  const { selectedUniversity, selectedCourse } = useContext(TutorDataContext);
+  const [tutorList, setTutorList] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // We fetch from the new endpoint that returns all tutors
-    const url = 'https://j3cw863bsl.execute-api.us-east-1.amazonaws.com/dev/tutorfilterresource'
-    console.log("[Fetch Tutors] calling:", url)
+    // Base endpoint
+    const baseUrl = 'https://j3cw863bsl.execute-api.us-east-1.amazonaws.com/dev/tutorfilterresource';
+    
+    // Build query params
+    const queryParams = new URLSearchParams();
 
-    fetch(url)
+    // 1) If user selected a numeric school_id, e.g. '1'
+    if (selectedUniversity) {
+      queryParams.append('school_id', selectedUniversity);
+    }
+
+    // 2) If user selected a course, e.g. "Corporate Finance"
+    if (selectedCourse) {
+      queryParams.append('classes_available_to_teach', selectedCourse);
+    }
+
+    const apiUrl = `${baseUrl}?${queryParams.toString()}`;
+    console.log("[Fetch Tutors] calling:", apiUrl);
+
+    fetch(apiUrl, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      }
+    })
       .then((res) => {
-        console.log("[Fetch Tutors] status:", res.status)
+        console.log("[Fetch Tutors] status:", res.status);
         if (!res.ok) {
-          throw new Error(`Failed to fetch tutors. Status: ${res.status}`)
+          throw new Error(`Failed to fetch tutors. Status: ${res.status}`);
         }
-        return res.json()
+        return res.json();
       })
       .then((data) => {
-        console.log("[Fetch Tutors] data:", data)
-        // data is presumably an array of tutor objects:
-        // [
-        //   {
-        //     "tutor_id": 1,
-        //     "name": "Sophia Miller",
-        //     "year_in_school": "Senior",
-        //     "major": ["Finance"],
-        //     "personal_bio": "...",
-        //     "rate_per_hour": 25,
-        //     "classes_available_to_teach": ["Corporate Finance", "Principles of Economics"],
-        //     ...
-        //   },
-        //   ...
-        // ]
-        setTutorList(data)
+        console.log("[Fetch Tutors] data:", data);
+        setTutorList(data);
       })
       .catch((err) => {
-        console.error('[Fetch Tutors] error:', err)
-      })
-  }, [])
+        console.error('[Fetch Tutors] error:', err);
+        setTutorList([]);
+      });
+  }, [selectedUniversity, selectedCourse]);
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
+      {/* NAVBAR */}
       <nav className="bg-white shadow px-6 py-4 flex justify-between items-center">
         <div 
           className="text-2xl font-bold text-brand-primary cursor-pointer"
@@ -55,28 +64,33 @@ function TutorMarketplacePage() {
           TutorMyCollege
         </div>
         <div className="space-x-4">
-          <button className="text-gray-700 hover:text-brand-primary transition" onClick={() => navigate('/')}>
+          <button 
+            className="text-gray-700 hover:text-brand-primary transition" 
+            onClick={() => navigate('/')}
+          >
             Home
           </button>
-          <button className="text-gray-700 hover:text-brand-primary transition" onClick={() => navigate('/student-dashboard')}>
+          <button 
+            className="text-gray-700 hover:text-brand-primary transition" 
+            onClick={() => navigate('/student-dashboard')}
+          >
             Student Dashboard
           </button>
         </div>
       </nav>
 
+      {/* MAIN CONTENT */}
       <main className="flex-grow p-6">
         <h1 className="text-3xl font-bold mb-6">Tutor Marketplace</h1>
-        {/* If you want to show which university/course user selected: */}
         <p className="text-gray-600 mb-4">
           Selected University: <strong>{selectedUniversity || "None"}</strong><br/>
           Selected Course: <strong>{selectedCourse || "None"}</strong>
         </p>
 
-        {/* Tutor Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {tutorList.length === 0 ? (
             <p className="text-gray-500 col-span-full">
-              No tutors found. (Or still loading...)
+              No tutors found or still loading...
             </p>
           ) : tutorList.map((tutor) => (
             <div key={tutor.tutor_id} className="bg-white p-4 rounded shadow">
@@ -90,7 +104,7 @@ function TutorMarketplacePage() {
                 Year: {tutor.year_in_school} | Rate: ${tutor.rate_per_hour}/hr
               </p>
               <p className="text-sm text-gray-600 mb-1">
-                Average Rating: {tutor.average_rating || "N/A"}
+                Avg Rating: {tutor.average_rating || "N/A"}
               </p>
               <p className="text-sm text-gray-700 mb-2">
                 {tutor.personal_bio || "No bio available"}
@@ -115,8 +129,10 @@ function TutorMarketplacePage() {
         </p>
       </footer>
     </div>
-  )
+  );
 }
 
-export default TutorMarketplacePage
+export default TutorMarketplacePage;
+
+
 
