@@ -1,61 +1,48 @@
 // src/pages/TutorMarketplacePage.jsx
-
-import React, { useContext, useEffect, useState } from 'react';
-import { TutorDataContext } from '../context/TutorDataContext.jsx';
-import { useNavigate } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from 'react'
+import { TutorDataContext } from '../context/TutorDataContext.jsx'
+import { useNavigate } from 'react-router-dom'
 
 function TutorMarketplacePage() {
-  const { selectedUniversity, selectedCourse } = useContext(TutorDataContext);
-  const [tutorList, setTutorList] = useState([]);
-  const navigate = useNavigate();
+  const { selectedUniversity, selectedCourse } = useContext(TutorDataContext)
+  const [tutorList, setTutorList] = useState([])
+  const navigate = useNavigate()
 
   useEffect(() => {
-    // Base endpoint
-    const baseUrl = 'https://j3cw863bsl.execute-api.us-east-1.amazonaws.com/dev/tutorfilterresource';
-    
-    // Build query params
-    const queryParams = new URLSearchParams();
+    const baseUrl = 'https://j3cw863bsl.execute-api.us-east-1.amazonaws.com/dev/tutorfilterresource'
+    const queryParams = new URLSearchParams()
 
-    // 1) If user selected a numeric school_id, e.g. '1'
-    if (selectedUniversity) {
-      queryParams.append('school_id', selectedUniversity);
+    if (selectedUniversity && selectedUniversity.id) {
+      // We pass ?school_id=1 (or similar)
+      queryParams.append('school_id', selectedUniversity.id)
     }
 
-    // 2) If user selected a course, e.g. "Corporate Finance"
     if (selectedCourse) {
-      queryParams.append('classes_available_to_teach', selectedCourse);
+      queryParams.append('classes_available_to_teach', selectedCourse)
     }
 
-    const apiUrl = `${baseUrl}?${queryParams.toString()}`;
-    console.log("[Fetch Tutors] calling:", apiUrl);
+    const apiUrl = `${baseUrl}?${queryParams.toString()}`
+    console.log("[Fetch Tutors] calling:", apiUrl)
 
-    fetch(apiUrl, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      }
-    })
+    fetch(apiUrl)
       .then((res) => {
-        console.log("[Fetch Tutors] status:", res.status);
+        console.log("[Fetch Tutors] status:", res.status)
         if (!res.ok) {
-          throw new Error(`Failed to fetch tutors. Status: ${res.status}`);
+          throw new Error(`Failed to fetch tutors. Status: ${res.status}`)
         }
-        return res.json();
+        return res.json()
       })
       .then((data) => {
-        console.log("[Fetch Tutors] data:", data);
-        setTutorList(data);
+        console.log("[Fetch Tutors] data:", data)
+        setTutorList(data)
       })
       .catch((err) => {
-        console.error('[Fetch Tutors] error:', err);
-        setTutorList([]);
-      });
-  }, [selectedUniversity, selectedCourse]);
+        console.error('[Fetch Tutors] error:', err)
+      })
+  }, [selectedUniversity, selectedCourse])
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      {/* NAVBAR */}
       <nav className="bg-white shadow px-6 py-4 flex justify-between items-center">
         <div 
           className="text-2xl font-bold text-brand-primary cursor-pointer"
@@ -79,11 +66,12 @@ function TutorMarketplacePage() {
         </div>
       </nav>
 
-      {/* MAIN CONTENT */}
       <main className="flex-grow p-6">
         <h1 className="text-3xl font-bold mb-6">Tutor Marketplace</h1>
+
+        {/* If we have selectedUniversity, show the name, else "None" */}
         <p className="text-gray-600 mb-4">
-          Selected University: <strong>{selectedUniversity || "None"}</strong><br/>
+          Selected University: <strong>{selectedUniversity?.name || "None"}</strong><br/>
           Selected Course: <strong>{selectedCourse || "None"}</strong>
         </p>
 
@@ -129,10 +117,11 @@ function TutorMarketplacePage() {
         </p>
       </footer>
     </div>
-  );
+  )
 }
 
-export default TutorMarketplacePage;
+export default TutorMarketplacePage
+
 
 
 
