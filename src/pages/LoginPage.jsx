@@ -13,94 +13,96 @@ function LoginPage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      {/* HEADER */}
-      <header className="h-16 px-6 flex justify-between items-center border-b border-gray-200">
-        {/* Left: Logo */}
-        <div className="text-2xl font-bold text-purple-600 cursor-pointer" onClick={() => navigate('/')}>
+      {/* Header with Logo and Sign Up */}
+      <header className="w-full px-6 py-4 flex justify-between items-center">
+        <div className="text-2xl font-cursive text-indigo-600 font-medium">
           TutorMyCollege
         </div>
-
-        {/* Right: Sign Up Button */}
         <button
           onClick={() => navigate('/signup')}
-          className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition"
+          className="bg-black text-white px-4 py-2 rounded-full text-sm hover:bg-gray-800 transition"
         >
           Sign Up
         </button>
       </header>
 
-      {/* Centered Login Box */}
-      <main className="flex justify-center items-center flex-grow">
-        <div className="bg-white border border-gray-200 rounded-lg p-8 w-full max-w-sm shadow-lg">
-          <h1 className="text-xl font-bold mb-6 text-center">Login</h1>
+      {/* Main Content */}
+      <main className="flex-grow flex items-center justify-center">
+        <div className="w-full max-w-md px-6">
+          <h1 className="text-3xl font-semibold text-center mb-8 text-gray-900">
+            Login
+          </h1>
 
-          {/* Google Sign-In Placeholder */}
-          <button className="w-full border border-gray-300 p-2 flex items-center justify-center bg-gray-100 text-gray-700 mb-4">
+          {/* Google Sign In */}
+          <button 
+            className="w-full bg-gray-50 p-3 rounded flex items-center justify-center gap-3 
+                       border border-gray-200 hover:bg-gray-100 transition mb-6"
+          >
+            <svg viewBox="0 0 24 24" className="w-6 h-6" xmlns="http://www.w3.org/2000/svg">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+            </svg>
             Sign in with Google
           </button>
 
           {/* Divider */}
-          <div className="flex items-center mb-4">
-            <hr className="flex-grow border-gray-300" />
-            <span className="mx-2 text-gray-400">or</span>
-            <hr className="flex-grow border-gray-300" />
+          <div className="flex items-center gap-4 mb-6">
+            <div className="h-px bg-gray-200 flex-grow"></div>
+            <span className="text-gray-500 text-sm">or</span>
+            <div className="h-px bg-gray-200 flex-grow"></div>
           </div>
 
-          {/* FORM */}
+          {/* Login Form */}
           <form onSubmit={handleLogin} className="space-y-4">
-            {/* School Email */}
             <div>
-              <label className="block text-sm text-gray-700 mb-1">School Email</label>
+              <label className="block text-sm text-gray-700 mb-2">
+                School Email
+              </label>
               <input
                 type="email"
-                placeholder="name@university.edu"
-                className="w-full border border-gray-300 rounded px-3 py-2
-                           bg-black text-white placeholder-gray-300
-                           focus:outline-none focus:ring-2 focus:ring-purple-600"
                 value={schoolEmail}
                 onChange={(e) => setSchoolEmail(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg
+                          focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                 required
               />
             </div>
 
-            {/* Password */}
             <div>
-              <label className="block text-sm text-gray-700 mb-1">Password</label>
+              <label className="block text-sm text-gray-700 mb-2">
+                Password
+              </label>
               <input
                 type="password"
-                placeholder="••••••••"
-                className="w-full border border-gray-300 rounded px-3 py-2
-                           bg-black text-white placeholder-gray-300
-                           focus:outline-none focus:ring-2 focus:ring-purple-600"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg
+                          focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                 required
               />
             </div>
 
-            {/* LOGIN BUTTON */}
             <button
               type="submit"
-              className="w-full bg-purple-600 text-white py-2 rounded font-medium 
-                         hover:bg-purple-700 transition-colors"
+              className="w-full bg-indigo-600 text-white py-2 rounded-lg font-medium
+                         hover:bg-indigo-700 transition-colors"
             >
               Login
             </button>
           </form>
 
-          {/* "Don't have an account? Sign up" */}
-          <div className="mt-4 text-center">
-            <p className="text-sm text-gray-600">
-              Don’t have an account?{' '}
-              <button
-                onClick={() => navigate('/signup')}
-                className="bg-black text-white px-2 py-1 rounded text-sm ml-1
-                           hover:bg-gray-800 transition"
-              >
-                Sign up
-              </button>
-            </p>
-          </div>
+          {/* Sign Up Link */}
+          <p className="mt-6 text-center text-gray-600 text-sm">
+            Don't have an account?{' '}
+            <button
+              onClick={() => navigate('/signup')}
+              className="text-indigo-600 hover:text-indigo-700 font-medium"
+            >
+              Sign up
+            </button>
+          </p>
         </div>
       </main>
     </div>
@@ -108,4 +110,3 @@ function LoginPage() {
 }
 
 export default LoginPage
-
